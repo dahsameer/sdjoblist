@@ -20,7 +20,8 @@ defmodule Sdjoblist.Application do
       # Start a worker by calling: Sdjoblist.Worker.start_link(arg)
       # {Sdjoblist.Worker, arg},
       # Start to serve requests, typically the last entry
-      SdjoblistWeb.Endpoint
+      SdjoblistWeb.Endpoint,
+      SdjoblistWorker.JobFetcher
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -39,3 +39,5 @@ npm-debug.log
 *.db
 *.db-*
 
+
+dets_simple_storage
