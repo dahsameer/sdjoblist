@@ -1,6 +1,7 @@
 defmodule Sdjoblist.Jobs do
 
   import Ecto.Query, warn: false
+  alias Sdjoblist.Jobs
   alias Sdjoblist.Repo
 
   alias Sdjoblist.Jobs.Job
@@ -10,6 +11,11 @@ defmodule Sdjoblist.Jobs do
   end
 
   def get_job(id), do: Repo.get(Job, id)
+
+  def get_company_job(id) do
+    query = from(j in Job, where: j.company_id == ^id)
+    Repo.all(query)
+  end
 
   def create_job(attrs \\ %{}) do
     %Job{}
