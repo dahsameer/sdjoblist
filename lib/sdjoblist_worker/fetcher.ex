@@ -34,6 +34,10 @@ defmodule SdjoblistWorker.Fetcher do
           Jobs.create_job(r)
         end
       end)
+      Companies.update_company(company, %{
+        last_run_time: DateTime.to_string(DateTime.utc_now()),
+        last_run_status: 1
+      })
     end
 
   end

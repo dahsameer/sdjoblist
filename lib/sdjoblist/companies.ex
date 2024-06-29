@@ -18,4 +18,10 @@ defmodule Sdjoblist.Companies do
     |> Company.changeset(attrs)
     |> Repo.insert()
   end
+
+  def update_company(%Company{} = company, attrs) do
+    company
+    |> Company.changeset(attrs)
+    |> Repo.update()
+  end
 end
