@@ -6,7 +6,6 @@ defmodule SdjoblistWorker.Fetcher do
 
     companies = Companies.list_companies()
     for company <- companies do
-      IO.inspect(company)
       {res, process} = Jason.decode(company.process)
       if res == :error do
         :error
@@ -17,10 +16,24 @@ defmodule SdjoblistWorker.Fetcher do
         |> Enum.map(fn x ->
           %{
             title: Floki.find(x, process["title"]) |> Floki.text(),
-            url: Floki.find(x, process["link"]) |> Floki.attribute("href") |> Floki.text()
+            link: Floki.find(x, process["link"]) |> Floki.attribute("href") |> Floki.text(),
+            company_id: company.id
           }
         end)
-      existingjobs = Jobs.get_company_job(company.id)
+      existingjobs = Jobs.get_company_jobs(company.id)
+      Enum.map(existingjobs, fn j ->
+        exists = Enum.find(res, fn r -> j.title == r.title end)
+        case exists do
+           nil -> Jobs.delete_job(j)
+           _ -> Jobs.update_job(j, exists)
+        end
+      end)
+      Enum.map(res, fn r ->
+        exists = Enum.find(existingjobs, fn j -> j.title == r.title end)
+        if exists == nil do
+          Jobs.create_job(r)
+        end
+      end)
     end
 
   end
