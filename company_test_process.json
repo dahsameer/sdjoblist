@@ -1,0 +1,7 @@
+{
+	"fetch_type": "scrape",
+	"url": "https://embed.homerun.co/pelftkzqkjmhs0h1kzef/widget-en.html?t=1718821968629",
+	"encloser": ".homerun-widget__list .homerun-widget__list-item",
+	"title": "div h3",
+	"link": "a"
+}
