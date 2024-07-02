@@ -18,6 +18,7 @@ defmodule SdjoblistWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/status", PageController, :status
   end
 
   # Other scopes may use custom stacks.

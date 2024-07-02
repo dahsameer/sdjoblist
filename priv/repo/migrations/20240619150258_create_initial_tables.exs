@@ -5,6 +5,7 @@ defmodule Sdjoblist.Repo.Migrations.CreateInitialTables do
     create table(:company) do
       add :name, :string
       add :description, :string
+      add :image, :string
       add :website, :string
       add :process, :string
       add :last_run_time, :string

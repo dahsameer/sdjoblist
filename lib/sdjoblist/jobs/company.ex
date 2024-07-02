@@ -1,4 +1,5 @@
 defmodule Sdjoblist.Jobs.Company do
+  alias Sdjoblist.Jobs.Job
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,10 +7,12 @@ defmodule Sdjoblist.Jobs.Company do
   schema "company" do
     field :name, :string
     field :description, :string
+    field :image, :string
     field :website, :string
     field :process, :string
     field :last_run_time, :string
     field :last_run_status, :integer
+    has_many :jobs, Job
     timestamps()
   end
 
