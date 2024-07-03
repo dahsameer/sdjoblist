@@ -12,16 +12,11 @@ defmodule SdjoblistWorker.Fetcher do
         if res == :error do
           :error
         end
-        response = Crawly.fetch(process["url"])
-        doc = Floki.parse_document!(response.body)
-        res = Floki.find(doc, process["encloser"])
-          |> Enum.map(fn x ->
-            %{
-              title: Floki.find(x, process["title"]) |> Floki.text(),
-              link: Floki.find(x, process["link"]) |> Floki.attribute("href") |> Floki.text(),
-              company_id: company.id
-            }
-          end)
+        res = case process["fetch_type"] do
+           "api" -> fetch_api(process, company)
+           "scrape" -> fetch_scrape(process, company)
+        end
+
         existingjobs = Jobs.get_company_jobs(company.id)
         Enum.map(existingjobs, fn j ->
           exists = Enum.find(res, fn r -> j.title == r.title end)
@@ -52,4 +47,31 @@ defmodule SdjoblistWorker.Fetcher do
 
   end
 
+  def fetch_api(process, company) do
+    response = HTTPoison.get!(process["url"])
+    {res, jd} = Jason.decode(response.body)
+    if res == :error do
+      :error
+    end
+    Enum.map(jd["jobs"], fn j ->
+      %{
+        title: j["title"],
+        link: j["absolute_url"],
+        company_id: company.id
+      }
+    end)
+  end
+
+  def fetch_scrape(process, company) do
+    response = Crawly.fetch(process["url"])
+    doc = Floki.parse_document!(response.body)
+    Floki.find(doc, process["encloser"])
+      |> Enum.map(fn x ->
+        %{
+          title: Floki.find(x, process["title"]) |> Floki.text(),
+          link: Floki.find(x, process["link"]) |> Floki.attribute("href") |> Floki.text(),
+          company_id: company.id
+        }
+      end)
+  end
 end

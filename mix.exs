@@ -41,6 +41,7 @@ defmodule Sdjoblist.MixProject do
       {:phoenix_live_view, "~> 0.20.2"},
       {:crawly, "~> 0.17.0"},
       {:floki, ">= 0.36.2"},
+      {:httpoison, "~> 2.2.1"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
