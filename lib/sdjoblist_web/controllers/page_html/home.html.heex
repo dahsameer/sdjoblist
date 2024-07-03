@@ -1,0 +1,38 @@
+<.flash_group flash={@flash} />
+<div>
+  <%= for {j,c} <- @jobs do %>
+    <div class="hover-me bg-white border border-grey  hover:shadow-md shadow-sm md:my-8 rounded-lg mb-4 md:mb-0 mx-4 md:mx-0">
+      <div class="block p-6 md:p-8 rounded-lg">
+        <div>
+          <div class="block md:flex items-center ">
+            <div class="w-12 h-12 mb-2 md:mb-0 border border-grey-300 mr-6 rounded-full self-start overflow-hidden">
+              <span style="box-sizing: border-box; display: inline-block; overflow: hidden; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; position: relative; max-width: 100%;">
+                <span style="box-sizing: border-box; display: block; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px; max-width: 100%;">
+                  <img
+                    alt=""
+                    aria-hidden="true"
+                    src={c.image}
+                    style="display: block; max-width: 100%; width: initial; height: initial; background: none; opacity: 1; border: 0px; margin: 0px; padding: 0px;"
+                  />
+                </span>
+              </span>
+            </div>
+            <div class="md:flex-1 text-grey-800 md:mr-8">
+              <a
+                title="Open in a new tab"
+                target="_blank"
+                class="block md:inline-block text-lg font-bold text-purple leading-tight cursor-pointer pb-1 mr-2 hover:underline"
+                href={j.link}
+              >
+                <%= j.title %>
+              </a>
+              <div class="">
+                <div class="inline">at <span class="font-semibold"><%= c.name %></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
