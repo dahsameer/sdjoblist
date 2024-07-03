@@ -12,4 +12,8 @@ defmodule SdjoblistWeb.PageController do
     companies = Companies.list_companies()
     render(conn, :status, companies: companies)
   end
+
+  def contact(conn, _params) do
+    render(conn, :contact)
+  end
 end

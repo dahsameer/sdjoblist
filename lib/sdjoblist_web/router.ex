@@ -19,6 +19,7 @@ defmodule SdjoblistWeb.Router do
 
     get "/", PageController, :home
     get "/status", PageController, :status
+    get "/contact", PageController, :contact
   end
 
   # Other scopes may use custom stacks.
