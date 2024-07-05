@@ -4,55 +4,65 @@ defmodule SdjoblistWorker.Fetcher do
   alias Sdjoblist.Companies
 
   def process() do
-
     companies = Companies.list_companies()
-    for company <- companies do
+
+    for company <- Enum.filter(companies, fn c -> c.id == 3 end) do
       try do
         {res, process} = Jason.decode(company.process)
+
         if res == :error do
-          :error
-        end
-        res = case process["fetch_type"] do
-           "api" -> fetch_api(process, company)
-           "scrape" -> fetch_scrape(process, company)
+          raise "error while parsing process json for companyid: " <> company.id
         end
 
+        res =
+          case process["fetch_type"] do
+            "api" -> fetch_api(process, company)
+            "scrape" -> fetch_scrape(process, company)
+          end
+
         existingjobs = Jobs.get_company_jobs(company.id)
+
         Enum.map(existingjobs, fn j ->
           exists = Enum.find(res, fn r -> j.title == r.title end)
+
           case exists do
             nil -> Jobs.delete_job(j)
             _ -> Jobs.update_job(j, exists)
           end
         end)
+
         Enum.map(res, fn r ->
           exists = Enum.find(existingjobs, fn j -> j.title == r.title end)
+
           if exists == nil do
             Jobs.create_job(r)
           end
         end)
+
         Companies.update_company(company, %{
           last_run_time: DateTime.to_string(DateTime.utc_now()),
           last_run_status: 1
         })
       rescue
-        e in RuntimeError -> Logger.error("error while running fetch job: " <> e.message)
-        Companies.update_company(company, %{
-          last_run_time: DateTime.to_string(DateTime.utc_now()),
-          last_run_status: 0
-        })
+        e in RuntimeError ->
+          Logger.error("error while running fetch job: " <> e.message)
+
+          Companies.update_company(company, %{
+            last_run_time: DateTime.to_string(DateTime.utc_now()),
+            last_run_status: 0
+          })
       end
-
     end
-
   end
 
   def fetch_api(process, company) do
     response = HTTPoison.get!(process["url"])
     {res, jd} = Jason.decode(response.body)
+
     if res == :error do
-      :error
+      raise "error while fetching details for companyid:" <> company.id
     end
+
     Enum.map(jd["jobs"], fn j ->
       %{
         title: j["title"],
@@ -65,13 +75,18 @@ defmodule SdjoblistWorker.Fetcher do
   def fetch_scrape(process, company) do
     response = Crawly.fetch(process["url"])
     doc = Floki.parse_document!(response.body)
+
     Floki.find(doc, process["encloser"])
-      |> Enum.map(fn x ->
-        %{
-          title: Floki.find(x, process["title"]) |> Floki.text(),
-          link: Floki.find(x, process["link"]) |> Floki.attribute("href") |> Floki.text(),
-          company_id: company.id
-        }
-      end)
+    |> Enum.map(fn x ->
+      %{
+        title: Floki.find(x, process["title"]) |> Floki.text(),
+        link:
+          case process["link"] do
+            "" -> Floki.attribute(x, "href") |> Floki.text()
+            _ -> Floki.find(x, process["link"]) |> Floki.attribute("href") |> Floki.text()
+          end,
+        company_id: company.id
+      }
+    end)
   end
 end
