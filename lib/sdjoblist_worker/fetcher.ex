@@ -6,7 +6,7 @@ defmodule SdjoblistWorker.Fetcher do
   def process() do
     companies = Companies.list_companies()
 
-    for company <- Enum.filter(companies, fn c -> c.id == 3 end) do
+    for company <- companies do
       try do
         {res, process} = Jason.decode(company.process)
 
