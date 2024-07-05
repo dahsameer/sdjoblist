@@ -8,6 +8,12 @@ defmodule SdjoblistWeb.PageController do
     render(conn, :home, jobs: jobs)
   end
 
+  def scroll(conn, %{"page" => page}) do
+    page = String.to_integer(page || "0")
+    jobs = Jobs.list_jobs(page)
+    render(conn, :scroll, jobs: jobs, root_layout: false, layout: false)
+  end
+
   def status(conn, _params) do
     companies = Companies.list_companies()
     render(conn, :status, companies: companies)
