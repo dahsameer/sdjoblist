@@ -5,9 +5,12 @@ defmodule SdjoblistWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, html: {SdjoblistWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+  end
+
+  pipeline :rootlayout do
+    plug :put_root_layout, html: {SdjoblistWeb.Layouts, :root}
   end
 
   pipeline :api do
@@ -16,10 +19,16 @@ defmodule SdjoblistWeb.Router do
 
   scope "/", SdjoblistWeb do
     pipe_through :browser
+    pipe_through :rootlayout
 
     get "/", PageController, :home
     get "/status", PageController, :status
     get "/contact", PageController, :contact
+  end
+
+  scope "/", SdjoblistWeb do
+    pipe_through :browser
+    get "/scroll", PageController, :scroll
   end
 
   # Other scopes may use custom stacks.
