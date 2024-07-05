@@ -9,12 +9,10 @@ defmodule Sdjoblist.Jobs do
   def list_jobs(page \\ 0) do
     per_page = 7
     offset_by = per_page * page
-    query =from(j in Job, join: c in Company, on: j.company_id == c.id, select: {j,c}, order_by: [desc: j.inserted_at])
+    from(j in Job, join: c in Company, on: j.company_id == c.id, select: {j,c}, order_by: [desc: j.inserted_at])
       |> limit(^per_page)
       |> offset(^offset_by)
-    x = Ecto.Adapters.SQL.to_sql(:all, Repo, query)
-    IO.inspect(x);
-    Repo.all(query)
+      |> Repo.all()
   end
 
   def get_job(id), do: Repo.get(Job, id)

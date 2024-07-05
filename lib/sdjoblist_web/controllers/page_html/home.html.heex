@@ -1,5 +1,5 @@
 <.flash_group flash={@flash} />
-<script src="/assets/home.js" defer></script>
+<script defer phx-track-static type="text/javascript" src={~p"/assets/home.js"}></script>
 <div id="job-container" data-currentPage="1">
   <%= for {j,c} <- @jobs do %>
     <div class="hover-me bg-white border border-grey  hover:shadow-md shadow-sm md:my-8 rounded-lg mb-4 md:mb-0 mx-4 md:mx-0">
@@ -37,4 +37,4 @@
     </div>
   <% end %>
 </div>
-<button type="button" id="next-button" class="block mt-5 bg-grey text-brand py-4 px-4 w-5/6 md:w-full rounded border border-grey font-bold hover:bg-blue-50">Load More</button>
+<button type="button" id="next-button" class="block mt-5 bg-grey text-brand py-4 px-4 w-full rounded border border-grey font-bold hover:bg-blue-50">Load More</button>
