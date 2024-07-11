@@ -12,10 +12,8 @@ function next_page(_){
 	fetch(`/scroll?page=${page + 1}`)
 		.then(resp => resp.text())
 		.then(html => {
-			debugger;
 			if(html == ""){
-				page = -1;
-				setButtonState(next_button, BUTTON.DISABLE);
+				next_button.remove();
 				return;
 			}
 			job_container.insertAdjacentHTML('beforeend', html);
