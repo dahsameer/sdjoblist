@@ -7,51 +7,55 @@ defmodule SdjoblistWorker.Fetcher do
     companies = Companies.list_companies()
 
     for company <- companies do
-      try do
-        {res, process} = Jason.decode(company.process)
+      spawn(fn -> processcompany(company) end)
+    end
+  end
 
-        if res == :error do
-          raise "error while parsing process json for companyid: " <> company.id
+  def processcompany(company) do
+    try do
+      {res, process} = Jason.decode(company.process)
+
+      if res == :error do
+        raise "error while parsing process json for companyid: " <> company.id
+      end
+
+      res =
+        case process["fetch_type"] do
+          "api" -> fetch_api(process, company)
+          "scrape" -> fetch_scrape(process, company)
         end
 
-        res =
-          case process["fetch_type"] do
-            "api" -> fetch_api(process, company)
-            "scrape" -> fetch_scrape(process, company)
-          end
+      existingjobs = Jobs.get_company_jobs(company.id)
 
-        existingjobs = Jobs.get_company_jobs(company.id)
+      Enum.map(existingjobs, fn j ->
+        exists = Enum.find(res, fn r -> j.title == r.title end)
 
-        Enum.map(existingjobs, fn j ->
-          exists = Enum.find(res, fn r -> j.title == r.title end)
+        case exists do
+          nil -> Jobs.delete_job(j)
+          _ -> Jobs.update_job(j, exists)
+        end
+      end)
 
-          case exists do
-            nil -> Jobs.delete_job(j)
-            _ -> Jobs.update_job(j, exists)
-          end
-        end)
+      Enum.map(res, fn r ->
+        exists = Enum.find(existingjobs, fn j -> j.title == r.title end)
 
-        Enum.map(res, fn r ->
-          exists = Enum.find(existingjobs, fn j -> j.title == r.title end)
+        if exists == nil do
+          Jobs.create_job(r)
+        end
+      end)
 
-          if exists == nil do
-            Jobs.create_job(r)
-          end
-        end)
+      Companies.update_company(company, %{
+        last_run_time: DateTime.to_string(DateTime.utc_now()),
+        last_run_status: 1
+      })
+    rescue
+      e in RuntimeError ->
+        Logger.error("error while running fetch job: " <> e.message)
 
         Companies.update_company(company, %{
           last_run_time: DateTime.to_string(DateTime.utc_now()),
-          last_run_status: 1
+          last_run_status: 0
         })
-      rescue
-        e in RuntimeError ->
-          Logger.error("error while running fetch job: " <> e.message)
-
-          Companies.update_company(company, %{
-            last_run_time: DateTime.to_string(DateTime.utc_now()),
-            last_run_status: 0
-          })
-      end
     end
   end
 
