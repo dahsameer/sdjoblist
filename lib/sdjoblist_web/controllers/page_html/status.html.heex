@@ -6,13 +6,13 @@
     <tr>
       <th class="border">Company</th>
       <th class="border">Last Fetch Status</th>
-      <th class="border">Last Fetch Time</th>
+      <th class="border">Last Fetched</th>
     </tr>
   </thead>
   <tbody>
     <%= for c <- @companies do %>
 		<tr class="text-center">
-			<td class="border"><%= c.name %></td>
+			<td class="border"><a href={c.website} class="text-brand underline"><%= c.name %></a></td>
 			
 			<%= if c.last_run_status == 1 do %>
 				<td class="text-green-500 border">✓</td>
