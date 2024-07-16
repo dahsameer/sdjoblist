@@ -67,10 +67,15 @@ defmodule SdjoblistWorker.Fetcher do
       raise "error while fetching details for companyid:" <> company.id
     end
 
-    Enum.map(jd["jobs"], fn j ->
+    parent = case process["encloser"] do
+      "" -> jd
+      _ -> jd[process["encloser"]]
+    end
+
+    Enum.map(parent, fn j ->
       %{
-        title: j["title"],
-        link: j["absolute_url"],
+        title: j[process["title"]],
+        link: j[process["link"]],
         company_id: company.id
       }
     end)

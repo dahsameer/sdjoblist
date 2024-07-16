@@ -6,7 +6,8 @@ defmodule Sdjoblist.Companies do
   alias Sdjoblist.Jobs.Company
 
   def list_companies do
-    Repo.all(Company)
+    from(c in Company, order_by: c.name)
+      |> Repo.all()
   end
 
   def get_company(id) do
