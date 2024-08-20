@@ -2,16 +2,36 @@
 <html lang="en" class="[scrollbar-gutter:stable]">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Find remote jobs that you can do from anywhere in the world.">
-    <meta name="keywords" content="Remote Jobs, Truly Remote Jobs, Work From Anywhere, Global Remote, RemoteOk, Remote, Jobs, Vacancy, Worldwide remote, SDJobList, Sd Job List, SDJobs">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Find truly remote jobs on SDJobList. Explore opportunities from anywhere in the world, across all industries. Work from home or while traveling—your next global career starts here."
+    />
+    <meta
+      name="keywords"
+      content="Remote Jobs, Truly Remote Jobs, Work From Anywhere, Global Remote, RemoteOk, Remote, Jobs, Vacancy, Worldwide remote, SDJobList, Sd Job List, SDJobs, Remote jobs, Work from anywhere, Global remote jobs, Freelance opportunities, Remote work positions, Work from home jobs, Digital nomad jobs, Remote IT jobs, Remote tech jobs, Fully remote jobs, International remote jobs, Remote job listings"
+    />
     <meta name="csrf-token" content={get_csrf_token()} />
     <.live_title suffix=" · SdJobList">
-      <%= assigns[:page_title] || "Sdjoblist" %>
+      <%= assigns[:page_title] || "SDJobList – Find Remote Jobs You Can Do From Anywhere" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
+    <link rel="canonical" href="https://sdjoblist.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SDJobList – Find Remote Jobs You Can Do From Anywhere" />
+    <meta
+      name="twitter:description"
+      content="Discover jobs that let you work from anywhere in the world. Start your remote career today!"
+    />
+    <meta property="og:title" content="SDJobList – Find Remote Jobs You Can Do From Anywhere" />
+    <meta
+      property="og:description"
+      content="Explore global opportunities to work remotely, across industries and roles. Truly remote jobs that fit your lifestyle."
+    />
+    <meta property="og:url" content="https://sdjoblist.com" />
+    <meta property="og:type" content="website" />
   </head>
   <body class="bg-white antialiased">
     <%= @inner_content %>
