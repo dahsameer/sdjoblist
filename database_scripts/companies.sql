@@ -104,7 +104,7 @@ NULL,
 'https://www.testgorilla.com/', 
 '{
 	"fetch_type": "scrape",
-	"url": "https://www.testgorilla.com/careers",
+	"url": "https://www.testgorilla.com/careers/",
 	"encloser": "#jobs a",
 	"title": "h3",
 	"link": ""
