@@ -21,7 +21,7 @@ defmodule SdjoblistWorker.JobFetcher do
   end
 
   defp schedule_work() do
-    random_time = (2 * 60 * 60 * 1000) + (:rand.uniform(30)) * 60 * 1000
+    random_time = (12 * 60 * 60 * 1000) + (:rand.uniform(60)) * 60 * 1000
     Process.send_after(self(), :work, random_time)
   end
 
